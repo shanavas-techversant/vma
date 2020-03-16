@@ -4,6 +4,7 @@ FB_AUTHORIZATION_BASE_URL = "https://www.facebook.com/dialog/oauth"
 FB_TOKEN_URL = "https://graph.facebook.com/oauth/access_token"
 BASE_URL = "https://035d8ee0.ngrok.io"
 
+
 class BaseConfig:
     """Base configuration"""
     TESTING = False

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+# acticate enviroment
+ENV_DIR="venv"
+PORT="8000"
+CERT_OPTIONS="--certfile certs/server.crt --keyfile certs/server.key --ca-certs certs/root_ca.pem"
+CONFIG="config.in"
+DEBUG=0
+
+
+usage () {
+  echo "
+usage: ./start.sh [-c cert-options] [-d] [-f configfile] [-p port] [-e vevn dir] | [-h]
+
+    -c, --certs certoption       certificate options to be passed to gunicorn
+    -d, --debuga                 enable debug
+    -e, --ven env-dir            virtual enviromrnt directory defaults to venv
+    -f, --config  config-file    config file to use defaults to config.in
+    -p, --port  port             port to bind application to
+    -h, --help                   show this message and exit
+"
+}
+
+
+activate_env() {
+  local envdir=$1
+  echo "activating virtall environment at" "$envdir"
+  source "${envdir}/bin/activate"
+}
+
+
+install_dependencies() {
+  echo "Installing dependencies with pip install"
+  pip install -r requirements.txt
+}
+
+
+migrate_database() {
+  echo "Migrating database updates"
+  flask db upgrade
+}
+
+
+while [ "$1" != "" ]; do
+    case $1 in
+      -c | --certs )
+        shift
+        CERT_OPTIONS=$*
+        ;;
+      -d | --debug )
+        DEBUG=1
+        ;;
+      -e | --venv )
+        shift
+        ENV_DIR=$1
+        ;;
+      -f | --config )
+        shift
+        CONFIG=$1
+        ;;
+      -p | --port )
+        shift
+        PORT=$1
+        ;;
+      -h | --help )
+        usage
+        exit
+        ;;
+      * )
+        usage
+        exit 1
+    esac
+    shift
+done
+
+
+activate_env "$ENV_DIR"
+
+install_dependencies
+
+echo "starting service using config file" "$CONFIG" "at port" "$PORT"
+
+export VMACONFIG="$CONFIG"
+if [ $DEBUG -eq 0 ]; then
+  gunicorn --bind="0.0.0.0:$PORT" --preload --workers=4 "startup:app" "$CERT_OPTIONS"
+else
+  export FLASK_ENV=development
+  export FLASK_RUN_PORT=$PORT
+  export FLASK_APP="startup:app"
+  python startup.py
+fi
