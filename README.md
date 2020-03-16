@@ -4,23 +4,16 @@
   - Setup virtual environment
   ```sh
   virtualenv -p python3.6 venv
-  pip install -r requirements.txt
   ```
-  - Create databases for parent and child and update credentials in start.sh
-    parent database name: vma_parent
-    child database name: vma_child
-  - start parent application
-    ```sh
-    ./start parent
-    ```
+  - Create databases for parent and child and update credentials in config.in
   - tunnel localhost connections so that facebook callbacks work
     ```sh
     ngork http 8000
     ```
   - update tunneled domain name in facebook Oauth settings
-  - start client application
+  - start parent, client application
     ```sh
-    ./start client
+    ./start
     ```
 
 ## Working

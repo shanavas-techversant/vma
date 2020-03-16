@@ -5,10 +5,12 @@ from requests.exceptions import ConnectionError
 from serializer import deserialize
 
 SCHEMA_ROUTE = "/api/get-schema"
+# TODO get from config
 CLIENT_CERT = "certs/client.pem"
 
 # for dev only
 urllib3.disable_warnings()
+
 
 def get_metadata_from_parent(base_url):
     try:

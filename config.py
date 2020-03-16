@@ -2,7 +2,13 @@ import os
 
 FB_AUTHORIZATION_BASE_URL = "https://www.facebook.com/dialog/oauth"
 FB_TOKEN_URL = "https://graph.facebook.com/oauth/access_token"
+# TODO get from config.ini
 BASE_URL = "https://035d8ee0.ngrok.io"
+
+
+def get_config_obj(inifile):
+    # TODO generate config object from inifile
+    pass
 
 
 class BaseConfig:

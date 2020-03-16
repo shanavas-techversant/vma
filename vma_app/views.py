@@ -17,9 +17,7 @@ def setup_routes(app):
     @app.route("/api/get-schema")
     def shema_view():
         schema = get_schema()
-        return jsonify({
-            "schema": serialize(schema)
-        })
+        return jsonify({"schema": serialize(schema)})
 
     @app.route("/fb-login")
     def login():
@@ -33,6 +31,7 @@ def setup_routes(app):
 
     @app.route("/fb-callback")
     def callback():
+        # issue new token
         fb_client_id = current_app.config["FB_CLIENT_ID"]
         fb_client_secret = current_app.config["FB_CLIENT_SECRET"]
         try:
@@ -45,15 +44,10 @@ def setup_routes(app):
 
             url = request.url.replace("http:", "https:")
             facebook.fetch_token(
-                FB_TOKEN_URL,
-                client_secret=fb_client_secret,
-                authorization_response=url,
+                FB_TOKEN_URL, client_secret=fb_client_secret, authorization_response=url
             )
 
         except Exception:
             redirect("/fb-login")
 
-
-        return jsonify({
-            "resource": "some protected resource"
-        })
+        return jsonify({"resource": "some protected resource"})
