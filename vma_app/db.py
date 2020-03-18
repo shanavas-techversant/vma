@@ -25,7 +25,7 @@ def init_db(app):
 
     try:
         with lock:
-            metadata = get_metadata_from_parent(base_url)
+            metadata = get_metadata_from_parent(base_url, app.config)
             engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
             metadata.create_all(engine, checkfirst=True)
     except Exception:

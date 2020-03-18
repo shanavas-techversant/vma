@@ -1,4 +1,5 @@
 import os
+import urllib3
 
 from constants import (
     CHILD_SERVICE,
@@ -45,8 +46,17 @@ def bootstap(app):
     """
     Bootstrap service specific actions
     """
+
+    # disable certificate warnings for non prod environments
+    if not is_production(app):
+        urllib3.disable_warnings()
+
     if app.config[SERVICE_NAME] == PARENT_SERVICE:
         MIGRATE.init_app(app, DB)
         migrate_database(app)
     elif app.config[SERVICE_NAME] == CHILD_SERVICE:
         init_db(app)
+
+
+def is_production(app):
+    return app.config.get("ENV") == "production"
