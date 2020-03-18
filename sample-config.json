@@ -1,0 +1,14 @@
+{
+  "SERVICE_NAME": "PARENT",
+  "SQLALCHEMY_DATABASE_URI": "db_uri",
+  "SQLALCHEMY_TRACK_MODIFICATIONS": false,
+  "FB_CLIENT_ID": "fb client id",
+  "FB_CLIENT_SECRET": "fb_client_secret",
+  "PARENT_BASE_URL": "PARENT_BASE_URL",
+  "BASE_URL": "https://035d8ee0.ngrok.io",
+  "SECRET_KEY": "SECRET_KEY",
+  "CLIENT_CERT": "path to client certificate",
+  "DEBUG": false,
+  "ENV": "production",
+  "TESTING": false
+}

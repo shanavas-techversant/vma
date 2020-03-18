@@ -1,0 +1,7 @@
+VMACONFIG = "VMACONFIG"
+DEFAULT_CONFIG_FILE = "config.json"
+PARENT_SERVICE = "PARENT"
+CHILD_SERVICE = "CHILD"
+SERVICE_NAME = "SERVICE_NAME"
+FB_AUTHORIZATION_BASE_URL = "https://www.facebook.com/dialog/oauth"
+FB_TOKEN_URL = "https://graph.facebook.com/oauth/access_token"

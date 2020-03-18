@@ -2,7 +2,7 @@ from flask import jsonify, render_template, redirect, current_app, request
 import requests_oauthlib
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
-from config import FB_AUTHORIZATION_BASE_URL, FB_TOKEN_URL, BASE_URL
+from constants import FB_AUTHORIZATION_BASE_URL, FB_TOKEN_URL
 from serializer import serialize
 from .db import get_schema
 
@@ -21,6 +21,7 @@ def setup_routes(app):
 
     @app.route("/fb-login")
     def login():
+        #TODO baseurl
         fb_client_id = current_app.config["FB_CLIENT_ID"]
         facebook = requests_oauthlib.OAuth2Session(
             fb_client_id, redirect_uri=BASE_URL + "/fb-callback", scope=["email"]
@@ -35,6 +36,7 @@ def setup_routes(app):
         fb_client_id = current_app.config["FB_CLIENT_ID"]
         fb_client_secret = current_app.config["FB_CLIENT_SECRET"]
         try:
+            #TODO baseurl
             facebook = requests_oauthlib.OAuth2Session(
                 fb_client_id, scope=["email"], redirect_uri=BASE_URL + "/fb-callback"
             )
