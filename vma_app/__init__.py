@@ -12,6 +12,7 @@ from flask import Flask  # Import the Flask class
 
 from .db import DB, MIGRATE, init_db, migrate_database
 from .extensions import csrf, login_manager, oauth
+from .views import register_blueprints
 
 
 def create_app():
@@ -34,6 +35,10 @@ def create_app():
     oauth.init_app(app)
 
     bootstap(app)
+
+    # register blueprints
+    register_blueprints(app)
+
     return app
 
 

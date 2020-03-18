@@ -52,9 +52,9 @@
             </ul>
             <form class="form-inline">
                 {% if current_user.is_authenticated %}
-                    <a class="btn btn-primary" href="{{ url_for('signout') }}" role="button">Sign out</a>
+                    <a class="btn btn-primary" href="{{ url_for('main.signout') }}" role="button">Sign out</a>
                 {% else %}
-                    <a class="btn btn-primary" href="{{ url_for('signin') }}" role="button">Sign in</a>
+                    <a class="btn btn-primary" href="{{ url_for('main.signin') }}" role="button">Sign in</a>
                 {% endif %}
             </form>
         </div>

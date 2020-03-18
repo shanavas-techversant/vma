@@ -159,7 +159,7 @@ class OAuth2Google(OAuth2Client):
         #   'token_type': 'Bearer'}
         if resp is None or resp.get('access_token') is None:
             flash('Authentication failed!', 'error')
-            return redirect(url_for('index'))
+            return redirect(url_for('main.index'))
         session['oauth2_token'] = (resp['access_token'], '')
         # https://developers.google.com/oauthplayground
         userinfo = self.google_remote_app.request(
@@ -251,7 +251,7 @@ class OAuth2Facebook(OAuth2Client):
         # error_description=x, error_reason=
         if resp is None or resp.get('access_token') is None:
             flash('Authentication failed!', 'error')
-            return redirect(url_for('index'))
+            return redirect(url_for('main.index'))
         session['oauth2_token'] = (resp['access_token'], '')
         me = self.facebook_remote_app.get('/me')
         # me.data = {'name': 'Johan Soetens', 'id': 'x'}

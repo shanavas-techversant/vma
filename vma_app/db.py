@@ -20,9 +20,7 @@ def get_schema():
 
 # connect to parent service and initialize database
 def init_db(app):
-
     base_url = app.config["PARENT_BASE_URL"]
-
     try:
         with lock:
             metadata = get_metadata_from_parent(base_url, app.config)

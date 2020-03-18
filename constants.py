@@ -8,6 +8,4 @@ FB_CLIENT_SECRET = "FB_CLIENT_SECRET"
 CLIENT_CERT = "CLIENT_CERT"
 
 DEFAULT_CONFIG_FILE = "config.json"
-FB_AUTHORIZATION_BASE_URL = "https://www.facebook.com/dialog/oauth"
-FB_TOKEN_URL = "https://graph.facebook.com/oauth/access_token"
-SCHEMA_ROUTE = "/api/v1/schema"
+SCHEMA_ROUTE = "/api/v1/internal/schema"

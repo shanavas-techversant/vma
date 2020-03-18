@@ -16,7 +16,7 @@
         <div class="row justify-content-center align-items-center">
 
             <div class="col-md-4">
-                <form action="{{ url_for('oauth2_signin', provider='google') }}">
+                <form action="{{ url_for('oauth.oauth2_signin', provider='google') }}">
                     <button class="btn btn-block btn-light button-google-signin" type="submit" name="googleSigninForm">
                         <img class="img-google-signin" src="{{ url_for('static', filename='img/logo-google-signin-button.svg') }}" alt="Google logo">
                         <span>Sign in with Google</span>
@@ -29,7 +29,7 @@
         <div class="row justify-content-center align-items-center">
 
             <div class="col-md-4">
-                <form action="{{ url_for('oauth2_signin', provider='facebook') }}">
+                <form action="{{ url_for('oauth.oauth2_signin', provider='facebook') }}">
                     <button class="btn btn-block btn-light button-facebook-signin" type="submit" name="facebookSigninForm">
                         <img class="img-facebook-signin" src="{{ url_for('static', filename='img/logo-facebook-signin-button.svg') }}" alt="Facebook logo">
                         <span>Sign in with Facebook</span>
@@ -45,7 +45,7 @@
 
         <div class="row justify-content-center align-items-center">
             <div class="col-md-4">
-                <form class="form-signin" id="signInForm" name="signInForm" method="POST" action="{{ url_for('.signin') }}" novalidate>
+                <form class="form-signin" id="signInForm" name="signInForm" method="POST" action="{{ url_for('main.signin') }}" novalidate>
                     {{ form.csrf_token }}
                     {{ render_field_signin(form.email_address, type="email", placeholder="Email Address", autofocus=True) }}
                     {{ render_field_signin(form.password, type="password", placeholder="Password") }}
