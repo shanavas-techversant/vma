@@ -31,14 +31,14 @@ activate_env() {
 
 install_dependencies() {
   echo "Installing dependencies with pip install"
-  pip install -r requirements.txt
+  pip install -r requirements.txt > /dev/null
+
+  if [ $? -ne 0 ]; then
+    echo "Failed to install dependencies" >&2
+    exit 1
+  fi
 }
 
-
-migrate_database() {
-  echo "Migrating database updates"
-  flask db upgrade
-}
 
 
 while [ "$1" != "" ]; do
@@ -82,7 +82,7 @@ echo "starting service using config file" "$CONFIG" "at port" "$PORT"
 
 export VMACONFIG="$CONFIG"
 if [ $DEBUG -eq 0 ]; then
-  gunicorn --bind="0.0.0.0:$PORT" --preload --workers=4 "startup:app" "$CERT_OPTIONS"
+  gunicorn --bind="0.0.0.0:$PORT" --preload --workers=4 "startup:app" $CERT_OPTIONS
 else
   export FLASK_ENV=development
   export FLASK_RUN_PORT=$PORT

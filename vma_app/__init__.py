@@ -9,7 +9,7 @@ from constants import (
 )
 from flask import Flask  # Import the Flask class
 
-from .db import DB, MIGRATE, init_db
+from .db import DB, MIGRATE, init_db, migrate_database
 
 
 def create_app():
@@ -47,8 +47,6 @@ def bootstap(app):
     """
     if app.config[SERVICE_NAME] == PARENT_SERVICE:
         MIGRATE.init_app(app, DB)
+        migrate_database(app)
     elif app.config[SERVICE_NAME] == CHILD_SERVICE:
-        try:
-            init_db(app)
-        except Exception:
-            raise RuntimeError("Could not initialize database schema")
+        init_db(app)
