@@ -6,17 +6,19 @@ PORT="8000"
 CERT_OPTIONS="--certfile certs/server.crt --keyfile certs/server.key --ca-certs certs/root_ca.pem"
 CONFIG="config.in"
 DEBUG=0
+MIGRATE=0
 
 
 usage () {
   echo "
-usage: ./start.sh [-c cert-options] [-d] [-f configfile] [-p port] [-e vevn dir] | [-h]
+usage: ./start.sh [-c cert-options] [-d] [-f configfile] [-p port] [-e vevn dir] | [-m] | [-h]
 
     -c, --certs certoption       certificate options to be passed to gunicorn
-    -d, --debuga                 enable debug
+    -d, --debug                  enable debug
     -e, --ven env-dir            virtual enviromrnt directory defaults to venv
     -f, --config  config-file    config file to use defaults to config.in
     -p, --port  port             port to bind application to
+    -m, --migrate                create migrations
     -h, --help                   show this message and exit
 "
 }
@@ -58,6 +60,9 @@ while [ "$1" != "" ]; do
         shift
         CONFIG=$1
         ;;
+      -m | --migrate )
+        MIGRATE=1
+        ;;
       -p | --port )
         shift
         PORT=$1
@@ -78,9 +83,17 @@ activate_env "$ENV_DIR"
 
 install_dependencies
 
+export VMACONFIG="$CONFIG"
+
+if [ $MIGRATE -eq 1 ]; then
+  echo "Creating migration files"
+  export FLASK_APP="startup:app"
+  flask db migrate
+  exit
+fi
+
 echo "starting service using config file" "$CONFIG" "at port" "$PORT"
 
-export VMACONFIG="$CONFIG"
 if [ $DEBUG -eq 0 ]; then
   gunicorn --bind="0.0.0.0:$PORT" --preload --workers=4 "startup:app" $CERT_OPTIONS
 else
