@@ -15,8 +15,10 @@
   "PARENT_BASE_URL": "PARENT_BASE_URL",
   "BASE_URL": "https://035d8ee0.ngrok.io",
   "SECRET_KEY": "SECRET_KEY",
+  "JWT_SECRET_KEY": "jwt secret",
+  "JWT_BLACKLIST_ENABLED": true,
+  "JWT_BLACKLIST_TOKEN_CHECKS": ["access", "refresh"],
   "CLIENT_CERT": "path to client certificate",
-  "JWT_TOKEN_EXPIRY": 300,
   "DEBUG": false,
   "ENV": "production",
   "TESTING": false

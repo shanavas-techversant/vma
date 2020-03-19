@@ -11,7 +11,7 @@ from constants import (
 from flask import Flask  # Import the Flask class
 
 from .db import DB, MIGRATE, init_db, migrate_database
-from .extensions import login_manager, oauth
+from .extensions import login_manager, oauth, jwt_auth
 from .views import register_blueprints
 
 
@@ -33,6 +33,9 @@ def create_app():
 
     # Initialize extension Flask-OAuthlib
     oauth.init_app(app)
+
+    # initialize jwt auth extension
+    jwt_auth.init_app(app)
 
     bootstap(app)
 

@@ -1,11 +1,8 @@
+from datetime import datetime
 import random
 import string
-from datetime import datetime, timedelta
-
 
 from flask_login import UserMixin
-from flask import current_app as app
-import jwt
 from sqlalchemy.sql import func
 
 from .utils import generate_argon2_hash, check_argon2_hash
@@ -69,47 +66,11 @@ class User(UserMixin, db.Model):
         """
         return check_argon2_hash(password, self.password_hash)
 
-    def encode_auth_token(self):
-        """
-        Generates the Auth Token
-        :return: string
-        """
-        token_expiry = app.config.get("JWT_TOKEN_EXPIRY", 300)
-        try:
-            payload = {
-                'exp': datetime.utcnow() + timedelta(token_expiry),
-                'iat': datetime.utcnow(),
-                'sub': self.id
-            }
-            return jwt.encode(
-                payload,
-                app.config.get('SECRET_KEY'),
-                algorithm='HS256'
-            )
-        except Exception as e:
-            # TODO log it
-            return None
-
-    @staticmethod
-    def decode_auth_token(auth_token):
-        """
-        Validates the auth token
-        :param auth_token:
-        :return: integer|string
-        """
-        try:
-            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
-            is_blacklisted_token = BlacklistToken.is_blacklisted(auth_token)
-            if is_blacklisted_token:
-                return 'Token blacklisted. Please log in again.'
-            else:
-                return payload['sub']
-        except jwt.ExpiredSignatureError:
-            # return 'Signature expired. Please log in again.'
-            return False
-        except jwt.InvalidTokenError:
-            # return 'Invalid token. Please log in again.'
-            return False
+    def __init__(self, email_address, username=None, provider="local", social_id=0):
+        self.email_address = email_address
+        self.username = username if username else self.email_address
+        self.provider = provider
+        self.social_id = social_id
 
     def to_dict(self):
         """ Convert the model to a dictionary that can go into a JSON """
@@ -136,7 +97,7 @@ class BlacklistToken(db.Model):
 
     def __init__(self, token):
         self.token = token
-        self.blacklisted_on = datetime.datetime.now()
+        self.blacklisted_on = datetime.utcnow()
 
     def __repr__(self):
         return '<id: token: {}'.format(self.token)

@@ -1,10 +1,10 @@
 from flask import g, jsonify
-from flask_httpauth import HTTPTokenAuth
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
+from flask_jwt_extended import JWTManager
 # from flask_wtf.csrf import CSRFProtect
 
-from .models import User
+from .models import User, BlacklistToken
 
 
 # CSRF Protection
@@ -54,24 +54,31 @@ def load_user(id):
 oauth = OAuth()
 
 
-# Flask httpauth
-auth = HTTPTokenAuth(scheme='Bearer')
+# Flask jwt auth extended
+jwt_auth = JWTManager()
 
 
-@auth.verify_token
-def verify_token(token):
-    resp = User.decode_auth_token(token)
-    if resp:
-        user = User.query.get(resp)
-        if user:
-            g.current_user = user
-            return True
-    return False
+@jwt_auth.user_identity_loader
+def user_identity_lookup(user):
+    return user.id
 
 
-@auth.error_handler
-def auth_error_handler():
-    return jsonify({
-        "status": "fail",
-        "message": "Please provide a valid token"
-    }), 401
+# sets flask_jwt_extended.current_user
+@jwt_auth.user_loader_callback_loader
+def user_loader_callback(identity):
+    return User.query.get(identity)
+
+
+# call back for user load failure
+@jwt_auth.user_loader_error_loader
+def custom_user_loader_error(identity):
+    ret = {
+        "msg": "User {} not found".format(identity)
+    }
+    return jsonify(ret), 404
+
+
+@jwt_auth.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return BlacklistToken.is_blacklisted(jti)
