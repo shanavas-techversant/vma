@@ -36,6 +36,20 @@ class User(UserMixin, db.Model):
         db.UniqueConstraint("provider", "social_id", name="uq_users_1"),
     )
 
+    def __init__(self, email_address, username=None, provider="local"):
+        self.email_address = email_address
+        self.username = username if username else self.email_address
+        self.provider = provider
+        self.social_id = User.generate_social_id()
+
+    @staticmethod
+    def create_user(email, password):
+        u = User(email)
+        u.password = password
+        db.session.add(u)
+        db.session.commit()
+
+    @staticmethod
     def generate_social_id(size=20, chars=string.digits):
         """
         Generates a social_id that can be used for local myapp users.
@@ -65,12 +79,6 @@ class User(UserMixin, db.Model):
         in the User model.
         """
         return check_argon2_hash(password, self.password_hash)
-
-    def __init__(self, email_address, username=None, provider="local", social_id=0):
-        self.email_address = email_address
-        self.username = username if username else self.email_address
-        self.provider = provider
-        self.social_id = social_id
 
     def to_dict(self):
         """ Convert the model to a dictionary that can go into a JSON """

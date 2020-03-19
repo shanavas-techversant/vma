@@ -7,6 +7,7 @@ CERT_OPTIONS="--certfile certs/server.crt --keyfile certs/server.key --ca-certs 
 CONFIG="config.in"
 DEBUG=0
 MIGRATE=0
+SEED=0
 
 
 usage () {
@@ -19,6 +20,7 @@ usage: ./start.sh [-c cert-options] [-d] [-f configfile] [-p port] [-e vevn dir]
     -f, --config  config-file    config file to use defaults to config.in
     -p, --port  port             port to bind application to
     -m, --migrate                create migrations
+    -s, --seed email password    seed database
     -h, --help                   show this message and exit
 "
 }
@@ -62,6 +64,14 @@ while [ "$1" != "" ]; do
         ;;
       -m | --migrate )
         MIGRATE=1
+        shift
+        ;;
+      -s | --seed )
+        SEED=1
+        shift
+        SEED_EMAIL=$1
+        shift
+        SEED_PASS=$1
         ;;
       -p | --port )
         shift
@@ -89,6 +99,13 @@ if [ $MIGRATE -eq 1 ]; then
   echo "Creating migration files"
   export FLASK_APP="startup:app"
   flask db migrate
+  exit
+fi
+
+if [ $SEED -eq 1 ]; then
+  echo "Seeding database"
+  export FLASK_APP="startup:app"
+  flask create-user "$SEED_EMAIL" "$SEED_PASS"
   exit
 fi
 

@@ -1,5 +1,6 @@
 import os
 import urllib3
+import click
 
 from constants import (
     CHILD_SERVICE,
@@ -68,6 +69,13 @@ def bootstap(app):
     # disable certificate warnings for non prod environments
     if not is_production(app):
         urllib3.disable_warnings()
+
+        @app.cli.command("create-user")
+        @click.argument("email")
+        @click.argument("password")
+        def seed_db(email, password):
+            from .models import User
+            User.create_user(email, password)
 
     if app.config[SERVICE_NAME] == PARENT_SERVICE:
         MIGRATE.init_app(app, DB)
