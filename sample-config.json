@@ -16,6 +16,7 @@
   "BASE_URL": "https://035d8ee0.ngrok.io",
   "SECRET_KEY": "SECRET_KEY",
   "CLIENT_CERT": "path to client certificate",
+  "JWT_TOKEN_EXPIRY": 300,
   "DEBUG": false,
   "ENV": "production",
   "TESTING": false

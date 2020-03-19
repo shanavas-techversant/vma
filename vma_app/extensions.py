@@ -1,17 +1,20 @@
-from flask_wtf.csrf import CSRFProtect
+from flask import g, jsonify
+from flask_httpauth import HTTPTokenAuth
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
+# from flask_wtf.csrf import CSRFProtect
 
 from .models import User
 
 
 # CSRF Protection
 # http://flask-wtf.readthedocs.io/en/stable/csrf.html
-csrf = CSRFProtect()
+# csrf = CSRFProtect()
 
 # Flask-Login
 # https://flask-login.readthedocs.io
 login_manager = LoginManager()
+
 
 # When a user attempts to access a login_required view without being logged in,
 # Flask-Login will flash a message and redirect them to the log in view.
@@ -49,3 +52,26 @@ def load_user(id):
 # Flask-OAuthlib
 # http://flask-oauthlib.readthedocs.io
 oauth = OAuth()
+
+
+# Flask httpauth
+auth = HTTPTokenAuth(scheme='Bearer')
+
+
+@auth.verify_token
+def verify_token(token):
+    resp = User.decode_auth_token(token)
+    if resp:
+        user = User.query.get(resp)
+        if user:
+            g.current_user = user
+            return True
+    return False
+
+
+@auth.error_handler
+def auth_error_handler():
+    return jsonify({
+        "status": "fail",
+        "message": "Please provide a valid token"
+    }), 401

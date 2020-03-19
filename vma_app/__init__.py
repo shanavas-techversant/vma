@@ -11,7 +11,7 @@ from constants import (
 from flask import Flask  # Import the Flask class
 
 from .db import DB, MIGRATE, init_db, migrate_database
-from .extensions import csrf, login_manager, oauth
+from .extensions import login_manager, oauth
 from .views import register_blueprints
 
 
@@ -26,7 +26,7 @@ def create_app():
     app.db = DB
 
     # Initialize extension CSRF Protection (Flask-WTF)
-    csrf.init_app(app)
+    # csrf.init_app(app)
 
     # Initialize extension Flask-Login
     login_manager.init_app(app)
