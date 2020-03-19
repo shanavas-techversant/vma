@@ -8,11 +8,12 @@ CONFIG="config.in"
 DEBUG=0
 MIGRATE=0
 SEED=0
+PYVER=3.6
 
 
 usage () {
   echo "
-usage: ./start.sh [-c cert-options] [-d] [-f configfile] [-p port] [-e vevn dir] | [-m] | [-h]
+usage: start [-c cert-options] [-d] [-f configfile] [-p port] [-e vevn dir] | [-m] | [-h]
 
     -c, --certs certoption       certificate options to be passed to gunicorn
     -d, --debug                  enable debug
@@ -27,7 +28,14 @@ usage: ./start.sh [-c cert-options] [-d] [-f configfile] [-p port] [-e vevn dir]
 
 
 activate_env() {
+  # Activate virtual environment from given directory
+  # if directory doesn't exist, create a virtual environment
+  # in it
   local envdir=$1
+  if [ ! -d "$envdir" ]; then
+    virtualenv -p "python${PYVER}" "$envdir"
+  fi
+
   echo "activating virtall environment at" "$envdir"
   source "${envdir}/bin/activate"
 }

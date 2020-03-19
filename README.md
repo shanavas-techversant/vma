@@ -5,20 +5,34 @@
   ```sh
   virtualenv -p python3.6 venv
   ```
-  - Create databases for parent and child and update credentials in config.in
-  - tunnel localhost connections so that facebook callbacks work
-    ```sh
-    ngork http 8000
-    ```
-  - update tunneled domain name in facebook Oauth settings
+  - create configuration files for parent and child from `sample-config.json` template
+  - Create databases for parent and child and update credentials in
+    corresponding config file
   - start parent, client application
     ```sh
-    ./start
+    ./start -f config-file.json
     ```
 
+## Startup script
+
+  Startup script supports a bunch of operations
+
+``` sh
+usage: ./start [-c cert-options] [-d] [-f configfile] [-p port] [-e vevn dir] | -s email password | -m | -h
+
+    -c, --certs certoption       certificate options to be passed to gunicorn
+    -d, --debug                  enable debug
+    -e, --ven env-dir            virtual enviromrnt directory defaults to venv
+    -f, --config  config-file    config file to use defaults to config.in
+    -p, --port  port             port to bind application to
+    -m, --migrate                create migrations
+    -s, --seed email password    seed database
+    -h, --help                   show this message and exit
+```
+
 ## Working
-  Parent service creates the database schema from [models](parent_app/models.py)
-  and exposes an API `/api/get-schema` which provides database metadata
+  Parent service creates the database schema from [models](vma_app/models.py)
+  and exposes an API `/api/v1/internal/schema` which provides database metadata
   (Serialized [SQLAlchemy MetaData](https://docs.sqlalchemy.org/en/13/core/metadata.html) Object).
 
 
@@ -28,16 +42,6 @@
   All clients that connect to parent service need to provide a client
   certificate trusted by server. Example certificates are provided [here](certs/)
 
-  Currently only `/fb-callback` route in parent app is SSO protected.
-
 #### Caveats
   - Current Implementation of database cloning doesn't handle table updates.
   Changes to a table that is already created in child won't be tracked further.
-
-  - The CA certificate that validates client certificates need to specified on
-  application startup (for all nginx, gunicorn and flask) and can't be updated
-  at runtime. This mandates the application restart for each issue or revocation
-  of a client certificate (Assuming each client certificate has its own CA
-  certificate at server). This can be addressed by patching client certificate
-  verification handler (Werkzeug or gunicorn) or creating an nginx plugin to
-  accept a directory instead of a list of CA certificates.
