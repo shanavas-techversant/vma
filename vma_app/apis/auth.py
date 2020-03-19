@@ -81,6 +81,21 @@ class LogoutAPI(Resource):
             return {"status": "fail", "message": "Error occurred. Try again"}, 500
 
 
+class MeAPI(Resource):
+    """
+    User Resource
+    """
+
+    decorators = [jwt_required]
+
+    def get(self):
+        try:
+            return current_user.to_dict(), 200
+        except Exception:
+            return {"status": "fail", "message": "Error occurred. Try again"}, 500
+
+
 api.add_resource(LoginAPI, "/login")
 api.add_resource(RefreshAPI, "/refresh")
 api.add_resource(LogoutAPI, "/logout")
+api.add_resource(MeAPI, "/me")

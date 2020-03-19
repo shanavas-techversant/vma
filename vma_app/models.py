@@ -88,8 +88,6 @@ class User(UserMixin, db.Model):
             "social_id": self.social_id,
             "email_address": self.email_address,
             "username": self.username,
-            "created_date": self.created_date,
-            "updated_date": self.updated_date,
         }
 
 
